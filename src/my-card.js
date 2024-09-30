@@ -8,6 +8,17 @@ import { LitElement, html, css } from 'lit';
 
 export class MyCard extends LitElement {
 
+
+  openChanged(e){
+    console.log(e.newState);
+    if (e.newState === "open"){
+      this.fancy = true;
+    }
+    else{
+      this.fancy = false;
+    }
+  }
+
   static get tag() {
     return 'my-card';
   }
@@ -15,12 +26,19 @@ export class MyCard extends LitElement {
   constructor() {
     super();
     this.title = "My card";
+    this.fancy = false;
   }
 
   static get styles() {
     return css`
       :host {
         display: block;
+        
+      }
+
+      :host([fancy]) 
+      {
+          display: block;
       }
 
       .card {
@@ -31,9 +49,17 @@ export class MyCard extends LitElement {
   margin-left: auto;
   margin-right: auto;
   background-color: green;
-  border: 12px solid;
+  border: solid black 12px;
   border-radius: 8px;
 }
+
+:host([fancy]) .card {
+  background-color: #add8e6; 
+  border: red 8px solid;
+  margin: 8px auto;
+}
+
+  
 
 .card img{
   width: 100%;
@@ -61,29 +87,32 @@ export class MyCard extends LitElement {
   }
 
   render() {
-    
     return html`
-
-    <div class="card">
-
-    <img src="https://t3.ftcdn.net/jpg/01/64/97/82/360_F_164978244_fiFBFcv8cAaO8yQpXewl1OyajjO61LNW.jpg" alt="Mr.Frog">
-    <h2>Mr.Frog</h2>
-    <p>This is a cool cartoon frog for kids. He is super nice and also my favorite animal. Not because I like frogs but because I think they are weird looking.</p>
-    <a href="https://hax.psu.edu" class="details">
-      <button class="details-btn">Details</button>
-
-    </a>
-    </div>
-    
-
+      <div class="card">
+        <img src="${this.ImageSrc}" alt="${this.title}">
+        <h2>${this.title}</h2>
+        <p>${this.p}</p>
+        <a href="https://hax.psu.edu" class="details">
+          <button class="details-btn">Details</button>
+  
+          <details ?open="${this.fancy}"
+            @toggle="${this.openChanged}">
+            <summary>Description</summary>
+            <p><slot name="details"></slot></p>     
+          </details>
+        </a>
+      </div>
     `;
-    }
+  }
+  
   
   static get properties() {
     return {
       title: { type: String },
       p : { type: String},
-      ImageSrc : { type: String} 
+      ImageSrc : { type: String},
+      fancy: {type: Boolean, reflect:true } 
+
     };
   }
 }
